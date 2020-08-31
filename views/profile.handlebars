@@ -1,39 +1,15 @@
-<form>
+<form action="/imageUpload" method="POST" enctype="multipart/form-data">
     <ul class="list-unstyled">
         <li class="media">
-            <img src="/static/img/default-profile-picture-png-clip-art.png" class="mr-3" alt="..." width="200">
+            <img src="/static/userImage/{{image}}" class="mr-3" alt="..." width="200" id="image" name="image">
             <div class="media-body">
                 <h5 class="mt-0 mb-1"></h5>
             </div>
         </li>
-        <li class="media">
-            <img src="/static/img/default-profile-picture-png-clip-art.png" class="mr-3" alt="..." width="200">
-            <div class="media-body">
-                <h5 class="mt-0 mb-1"></h5>
-            </div>
-        </li>
-        <li class="media">
-            <img src="/static/img/default-profile-picture-png-clip-art.png" class="mr-3" alt="..." width="200">
-            <div class="media-body">
-                <h5 class="mt-0 mb-1"></h5>
-            </div>
-        </li>
-        <li class="media">
-            <img src="/static/img/default-profile-picture-png-clip-art.png" class="mr-3" alt="..." width="200">
-            <div class="media-body">
-                <h5 class="mt-0 mb-1"></h5>
-            </div>
-        </li>
-        <li class="media">
-            <img src="/static/img/default-profile-picture-png-clip-art.png" class="mr-3" alt="..." width="200">
-            <div class="media-body">
-                <h5 class="mt-0 mb-1"></h5>
-            </div>
-        </li>
-        
-            <input type="file"
-       id="avatar" name="avatar"
-       accept="image/png, image/jpeg">
+            <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg">
+            <button type="submit" class="btn btn-primary">upload</button>
+</form>
+<form action="/updateProfile" method="POST">
     </ul>
     <div>
     </div>
@@ -42,60 +18,99 @@
     </div>
     <div class="form-group">
         <label for="exampleFormControlInput1">Fullname</label>
-        <input type="text" class="form-control" name="fullname" id="fullname" placeholder="">
+        <input type="text" class="form-control" name="fullname" id="fullname" value="{{fullname}}">
     </div>
     <div class="form-group">
         <label for="exampleFormControlInput1">Age</label>
-        <input type="text" class="form-control" name="age" id="age" placeholder="">
+        <input type="text" class="form-control" name="age" id="age" value="{{age}}">
     </div>
     <div class="form-group">
         <label for="exampleFormControlTextarea1">Bio</label>
-        <textarea class="form-control" name="bio" id="bio" rows="3"></textarea>
+        <textarea type="text" class="form-control" name="bio" id="bio" rows="3">{{bio}}</textarea>
     </div>
     <div>
         <a>Interests</a>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="gaming" id="gaming" value="option1">
+        {{#ifeq gaming 1}}
+            <input class="form-check-input" type="checkbox" name="gaming" id="gaming" value="gaming" checked="true">
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="gaming" id="gaming" value="gaming">
+        {{/ifeq}}
         <label class="form-check-label" for="inlineCheckbox1">Gaming</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="music" id="music" value="option2">
+        {{#ifeq music 1}}
+            <input class="form-check-input" type="checkbox" name="music" id="music" value="music" checked="true">
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="music" id="music" value="optmusicion1">
+        {{/ifeq}}
         <label class="form-check-label" for="inlineCheckbox2">Music</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="netflix" id="netflix" value="option3">
+        {{#ifeq netflix 1}}
+            <input class="form-check-input" type="checkbox" name="netflix" id="netflix" value="netflix" checked="true">
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="netflix" id="netflix" value="netflix">
+        {{/ifeq}}
         <label class="form-check-label" for="inlineCheckbox3">Netflix</label>
     </div>
     <div>
         <a>Gender</a>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="male" id="male" value="option1">
-        <label class="form-check-label" for="inlineRadio1">Male</label>
+        {{#ifeq male 1}}
+        <input class="form-check-input" type="radio" name="gender" id="male" value="male" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+        {{/ifeq}}
+        <label class="form-check-label" for="male">Male</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="female" id="female" value="option2">
-        <label class="form-check-label" for="inlineRadio2">Female</label>
+        {{#ifeq female 1}}
+        <input class="form-check-input" type="radio" name="gender" id="female" value="female" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+        {{/ifeq}}
+        <label class="form-check-label" for="female">Female</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="bi" id="bi" value="option3">
-        <label class="form-check-label" for="inlineRadio3">Bi</label>
+        {{#ifeq bi 1}}
+        <input class="form-check-input" type="radio" name="gender" id="bi" value="bi" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="gender" id="bi" value="bi">
+        {{/ifeq}}
+        <label class="form-check-label" for="bi">Bi</label>
     </div>
     <div>
         <a>Interested in</a>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="male" id="male" value="option1">
+        {{#if maleSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intMale" value="intMale" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intMale" value="intMale">
+        {{/if}}
         <label class="form-check-label" for="inlineCheckbox1">Male</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="female" id="female" value="option2">
-        <label class="form-check-label" for="inlineCheckbox2">Female</label>
+        {{#if femaleSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intFemale" value="intFemale" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intFemale" value="intFemale">
+        {{/if}}
+        <label class="form-check-label" for="inlineCheckbox1">Female</label>
     </div>
     <div class="form-check form-check-inline">
-        <input class="form-check-input" type="checkbox" name="both" id="both" value="option3">
-        <label class="form-check-label" for="inlineCheckbox3">Both</label>
+        {{#if bothSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intBoth" value="intBoth" checked="true">
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intBoth" value="intBoth">
+        {{/if}}
+        <label class="form-check-label" for="inlineCheckbox1">Both</label>
     </div>
-    <button type="submit" class="btn btn-primary">Signup</button>
+    <div>
+
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
 </form>

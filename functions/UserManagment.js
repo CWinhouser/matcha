@@ -7,33 +7,62 @@ function addUser(newUser) {
         if (err) throw (err);
 
         console.log("Insert was succesful");
-    })
+    });
+
+    addProfile(newUser);
+}
+
+async function addProfile(newUser) {
+    let userID = '';
+    db.connection.query("SELECT userID FROM users WHERE email = ?", newUser.email, (err, rows) => {
+        userID = rows[0].userID
+
+        newProfile = {
+            gender: 'bi',
+            interestedIn: 'both',
+            bio: '',
+            gaming: false,
+            netflix: false,
+            music: false,
+            userID: userID,
+            popularity: 100,
+            age: 18
+        }
+
+        db.connection.query('INSERT INTO profile SET ?', newProfile, (err, res) => {
+            if (err) throw (err);
+
+            console.log("Insert was succesful");
+        })
+    });
 }
 
 function userLogin(email, password, req, res) {
     let passQry = db.connection.query("SELECT * FROM users WHERE email = ?", email, (err, rows) => {
-        rows.forEach((row) => {
-            let pass = `${row.password}`;
-            bcrypt.compare(password, pass, (err, response) => {
-                if (err) throw (err);
-                if (response) {
-                    req.session.loggedIn = 1;
-                    req.session.email = email;
-                    console.log("user signed in");
-                    res.redirect('/match')
-                } else {
-                    let err = [];
+        if (rows && rows)
+            rows.forEach((row) => {
+                let pass = `${row.password}`;
+                bcrypt.compare(password, pass, (err, response) => {
+                    if (err) throw (err);
+                    if (response) {
+                        req.session.loggedIn = 1;
+                        req.session.email = email;
+                        req.session.userID = `${row.userID}`;
+                        console.log("user signed in");
+                        res.redirect('/match')
+                    } else {
+                        let err = [];
 
-                    err.push({ text: 'Passwords is incorrect' });
-                    res.render('home', {
-                        err: err,
-                        title: 'Error',
-                        email: req.body.email,
-                        password: req.body.password
-                    });
-                }
+                        err.push({ text: 'Passwords is incorrect' });
+                        res.render('home', {
+                            err: err,
+                            title: 'Error',
+                            email: req.body.email,
+                            password: req.body.password
+                        });
+                    }
+                });
             });
-        });
         console.log("Found " + rows);
     });
 }
@@ -54,26 +83,125 @@ function resetPassword(password, email) {
     })
 }
 
-function userLoggedOut(req, res){
-    if(req.session.loggedIn === 0 || req.session.loggedIn === undefined){
+function userLoggedOut(req, res) {
+    if (req.session.loggedIn === 0 || req.session.loggedIn === undefined) {
         res.redirect('/');
         res.render('home');
     }
 };
 
-function userLoggedIn(req, res){
-    if(req.session.userLoggedIn === 1){
+function userLoggedIn(req, res) {
+    if (req.session.userLoggedIn === 1) {
         res.redirect('/match');
         res.render('match');
     }
 };
 
-function userProfile(req, res){
-    let passQry = db.connection.query("SELECT * FROM users WHERE email = ?", req.session.email, (err, rows) => {
-        res.render('profile', {
-            fullname: 'Kyle Twomey'
+function userProfile(req, res) {
+    let img = '';
+    let imgQry = db.connection.query("SELECT * FROM images WHERE userID = ? ORDER by 1 ASC", req.session.userID, (err, rows) => {
+        rows.forEach((row) => {
+            img = `${row.filepath}` + '.jpg';
         });
     });
+    let fullname = '';
+    let passQry = db.connection.query("SELECT * FROM users WHERE email = ?", req.session.email, (err, rows) => {
+        rows.forEach((row) => {
+            fullname = `${row.fullname}`
+        });
+    });
+    let profileQry = db.connection.query("SELECT * FROM profile WHERE userid = ?", req.session.userID, (err, rows) => {
+        rows.forEach((row) => {
+            let male = false;
+            let female = false;
+            let bi = false;
+            if (`${row.gender}` == 'male') {
+                male = true;
+            } else if (`${row.gender}` == "female") {
+                female = true;
+            } else {
+                bi = true;
+            }
+            let intMale = false;
+            let intFemale = false;
+            let intBoth = false;
+            if (`${row.interestedIn}` == "male") {
+                intMale = true;
+            } else if (`${row.interestedIn}` == "female") {
+                intFemale = true;
+            } else {
+                intBoth = true;
+            }
+            let age = '18';
+            if (`${row.age}` == 'undefined') {
+                age = '18'
+            } else {
+                age = `${row.age}`
+            }
+            let bio = `${row.bio}`
+            let userProfile = {
+                image: img,
+                fullname: fullname,
+                age: age,
+                bio: bio,
+                gaming: `${row.gaming}`,
+                netflix: `${row.netflix}`,
+                music: `${row.music}`,
+                male: male,
+                female: female,
+                bi: bi,
+                maleSelected: intMale,
+                femaleSelected: intFemale,
+                bothSelected: intBoth
+            }
+            res.render('profile', userProfile);
+        })
+    });
+};
+
+function updateProfile(req, res) {
+    let gender = '';
+    if (req.body.gender == 'male') {
+        gender = 'male';
+    } else if (req.body.gender == 'female') {
+        gender = 'female';
+    } else {
+        gender = 'bi';
+    }
+    let interestedIn = '';
+    if (req.body.interested == 'intMale') {
+        interestedIn = 'male';
+    } else if (req.body.interested == 'intFemale') {
+        interestedIn = 'female';
+    } else {
+        interestedIn = 'both';
+    }
+    let gaming = 0;
+    if (req.body.gaming == 'gaming') {
+        gaming = 1;
+    }
+    let music = 0;
+    if (req.body.music == 'music') {
+        music = 1;
+    }
+    let netflix = 0;
+    if (req.body.netflix == 'netflix') {
+        netflix = 1;
+    }
+    if (req.body)
+        updateProf = {
+            gender: gender,
+            interestedIn: interestedIn,
+            bio: req.body.bio,
+            gaming: gaming,
+            netflix: netflix,
+            music: music,
+            userID: req.session.userID,
+            popularity: 100,
+            age: req.body.age
+        }
+    db.connection.query('UPDATE profile set ? where userID = ?', [updateProf, req.session.userID]);
+    res.redirect('/profile');
 };
 
 module.exports = {
@@ -83,5 +211,6 @@ module.exports = {
     userLogin: userLogin,
     userLoggedOut: userLoggedOut,
     userProfile: userProfile,
+    updateProfile: updateProfile,
     userLoggedIn: userLoggedIn
 }
