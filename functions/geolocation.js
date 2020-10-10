@@ -3,7 +3,7 @@ const db = require('../database/db');
 function geolocation(session) {
 	var unirest = require("unirest");
 
-	var req = unirest("GET", "http://api.ipstack.com/196.50.192.239?access_key=96069f57a695c4c6507bf4005a2348ee");
+	var req = unirest("GET", "http://api.ipstack.com/196.50.192.239?access_key=");
 
 	req.query({
 		"language": "en",
