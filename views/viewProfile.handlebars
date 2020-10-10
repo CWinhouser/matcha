@@ -1,0 +1,109 @@
+<form action="/imageUpload" method="POST" enctype="multipart/form-data">
+    <ul class="list-unstyled">
+        <li class="media">
+            <img src="/static/userImage/{{image}}" class="mr-3" alt="..." width="200" id="image" name="image">
+            <div class="media-body">
+                <h5 class="mt-0 mb-1"></h5>
+            </div>
+        </li>
+</form>
+<form action="/likeProfile/{{ userID }}" method="POST">
+    </ul>
+    <div>
+    </div>
+    <div>
+        <a>Popularity:</a>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Fullname</label>
+        <input type="text" class="form-control" name="fullname" id="fullname" value="{{fullname}}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlInput1">Age</label>
+        <input type="text" class="form-control" name="age" id="age" value="{{age}}" readonly>
+    </div>
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Bio</label>
+        <textarea type="text" class="form-control" name="bio" id="bio" rows="3" readonly>{{bio}}</textarea>
+    </div>
+    <div>
+        <a>Interests</a>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#ifeq gaming 1}}
+            <input class="form-check-input" type="checkbox" name="gaming" id="gaming" value="gaming" checked="true" disabled>
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="gaming" id="gaming" value="gaming" disabled>
+        {{/ifeq}}
+        <label class="form-check-label" for="inlineCheckbox1" disabled>Gaming</label>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#ifeq music 1}}
+            <input class="form-check-input" type="checkbox" name="music" id="music" value="music" checked="true"disabled>
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="music" id="music" value="optmusicion1"disabled>
+        {{/ifeq}}
+        <label class="form-check-label" for="inlineCheckbox2" disabled>Music</label>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#ifeq netflix 1}}
+            <input class="form-check-input" type="checkbox" name="netflix" id="netflix" value="netflix" checked="true"disabled>
+        {{else}}
+            <input class="form-check-input" type="checkbox" name="netflix" id="netflix" value="netflix"disabled>
+        {{/ifeq}}
+        <label class="form-check-label" for="inlineCheckbox3" disabled>Netflix</label>
+    </div>
+    <div>
+        <a>Gender</a>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#ifeq male 1}}
+        <input class="form-check-input" type="radio" name="gender" id="male" value="male" checked="true"disabled>
+        {{else}}
+        <input class="form-check-input" type="radio" name="gender" id="male" value="male"disabled>
+        {{/ifeq}}
+        <label class="form-check-label" for="male" disabled>Male</label>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#ifeq female 1}}
+        <input class="form-check-input" type="radio" name="gender" id="female" value="female" checked="true"disabled>
+        {{else}}
+        <input class="form-check-input" type="radio" name="gender" id="female" value="female"disabled>
+        {{/ifeq}}
+        <label class="form-check-label" for="female" disabled>Female</label>
+    </div>
+    <div>
+        <a>Interested in</a>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#if maleSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intMale" value="intMale" checked="true"disabled>
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intMale" value="intMale"disabled>
+        {{/if}}
+        <label class="form-check-label" for="inlineCheckbox1"disabled>Male</label>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#if femaleSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intFemale" value="intFemale" checked="true"disabled>
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intFemale" value="intFemale"disabled>
+        {{/if}}
+        <label class="form-check-label" for="inlineCheckbox1"disabled>Female</label>
+    </div>
+    <div class="form-check form-check-inline">
+        {{#if bothSelected}}
+        <input class="form-check-input" type="radio" name="interested" id="intBoth" value="intBoth" checked="true"disabled>
+        {{else}}
+        <input class="form-check-input" type="radio" name="interested" id="intBoth" value="intBoth"disabled>
+        {{/if}}
+        <label class="form-check-label" for="inlineCheckbox1"disabled>Both</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Match</button>
+</form>
+<form action="/blockProfile/{{ userID }}" method="POST">
+    <button type="submit" class="btn btn-primary">Block</button>
+</form>
+<form action="/report/{{ userID }}" method="POST">
+    <button type="submit" class="btn btn-primary">Report</button>
+</form>

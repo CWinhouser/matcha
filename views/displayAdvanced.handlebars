@@ -1,0 +1,27 @@
+{{#each people as | person |}}
+        <div class="row">
+            <div class="col-md-3">
+                <a href="/viewProfile/{{userID}}">
+              <img src="/static/userImage/{{image}}"  width=128px />
+                </a>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span>{{ fullname }}</span>
+                    </div>
+                    <div class="col-md-4">
+                        <span>Popularity: {{ popularity }}</span>
+                    </div>
+                    <div class="col-md-2">
+                        <span>Age: {{ age }}</span>
+                    </div>
+                </div>
+                <br />
+                <div class="col-md-3">
+                    <span>Location: In your city</span>
+                </div>
+            </div>
+            <hr />
+        </div>
+        {{/each}}

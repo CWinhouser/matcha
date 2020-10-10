@@ -1,5 +1,6 @@
 const db = require('../database/db');
 const bcrypt = require('bcryptjs');
+const location = require('../functions/geolocation');
 const { session } = require('passport');
 
 function addUser(newUser) {
@@ -165,8 +166,6 @@ function updateProfile(req, res) {
         gender = 'male';
     } else if (req.body.gender == 'female') {
         gender = 'female';
-    } else {
-        gender = 'bi';
     }
     let interestedIn = '';
     if (req.body.interested == 'intMale') {
@@ -204,6 +203,69 @@ function updateProfile(req, res) {
     res.redirect('/profile');
 };
 
+function viewMatch(req, res) {
+    let img = '';
+    let imgQry = db.connection.query("SELECT * FROM images WHERE userID = ? ORDER by 1 ASC", req.params.userID, (err, rows) => {
+        rows.forEach((row) => {
+            img = `${row.filepath}` + '.jpg';
+        });
+    });
+    let fullname = '';
+    let passQry = db.connection.query("SELECT * FROM users WHERE userID = ?", req.params.userID, (err, rows) => {
+        rows.forEach((row) => {
+            fullname = `${row.fullname}`
+        });
+    });
+    let profileQry = db.connection.query("SELECT * FROM profile WHERE userid = ?", req.params.userID, (err, rows) => {
+        rows.forEach((row) => {
+            let male = false;
+            let female = false;
+            let bi = false;
+            if (`${row.gender}` == 'male') {
+                male = true;
+            } else if (`${row.gender}` == "female") {
+                female = true;
+            } else {
+                bi = true;
+            }
+            let intMale = false;
+            let intFemale = false;
+            let intBoth = false;
+            if (`${row.interestedIn}` == "male") {
+                intMale = true;
+            } else if (`${row.interestedIn}` == "female") {
+                intFemale = true;
+            } else {
+                intBoth = true;
+            }
+            let age = '18';
+            if (`${row.age}` == 'undefined') {
+                age = '18'
+            } else {
+                age = `${row.age}`
+            }
+            let bio = `${row.bio}`
+            let userProfile = {
+                userID: req.params.userID,
+                image: img,
+                fullname: fullname,
+                age: age,
+                bio: bio,
+                gaming: `${row.gaming}`,
+                netflix: `${row.netflix}`,
+                music: `${row.music}`,
+                male: male,
+                female: female,
+                bi: bi,
+                maleSelected: intMale,
+                femaleSelected: intFemale,
+                bothSelected: intBoth
+            }
+            res.render('viewProfile', userProfile);
+        })
+    });
+}
+
 module.exports = {
     addUser: addUser,
     activateUser: activateUser,
@@ -212,5 +274,6 @@ module.exports = {
     userLoggedOut: userLoggedOut,
     userProfile: userProfile,
     updateProfile: updateProfile,
-    userLoggedIn: userLoggedIn
+    userLoggedIn: userLoggedIn,
+    viewMatch: viewMatch
 }

@@ -15,6 +15,7 @@ const { response } = require('express');
 const { activateUser, userLoggedIn } = require('./functions/UserManagment');
 const e = require('express');
 const path = require('path');
+const location = require('./functions/geolocation');
 const sendMail = require('./functions/sendMail');
 const UserManagment = require('./functions/UserManagment');
 const { time } = require('console');
@@ -116,6 +117,27 @@ app.post('/resetPassword', (req, res) => {
     res.redirect('/');
 });
 
+app.get('/viewProfile/:userID([a-z0-9_$\.@]+)', (req,res) => {
+    db.connection.query("INSERT INTO `notifications`(`userID`, `message`) VALUES (? , ?)", [req.params.userID, 'Someone has viewed your profile'])
+    userManagment.userLoggedOut(req, res);
+    userManagment.viewMatch(req, res);
+});
+
+app.post('/likeProfile/:userID([a-z0-9_$\.@]+)', (req, res) => {
+    userManagment.userLoggedOut(req, res);
+    match.likeProfile(req, res);
+})
+
+app.get('/advancedSearch', (req, res) => {
+    userManagment.userLoggedOut(req, res);
+    res.render('advancedSearch');
+})
+
+app.post('/showAdvanced', (req, res) => {
+    userManagment.userLoggedOut(req, res);
+    match.displayAdv(req,res);
+})
+
 app.get('/resetPassword/:email([a-z0-9_$\.@]+)', (req, res) => {
     req.session.emailReset = req.params.email;
     res.render('resetPassword');
@@ -133,6 +155,11 @@ app.get('/newAccount', (req, res) => {
         title: 'Signup'
     })
 });
+
+app.get('/notifications', (req, res) => {
+    userManagment.userLoggedOut(req, res);
+    match.notification(req, res);
+})
 
 app.post('/signup', (req, res) => {
     console.log(req.body);
@@ -225,8 +252,18 @@ app.post('/resendLink', (req, res) => {
 
 app.get('/match', (req, res) => {
     userManagment.userLoggedOut(req, res);
+    location.geolocation (req);
     match.display(req, res);
 });
+
+app.post('/blockProfile/:userID([a-z0-9_$\.@]+)', (req, res) => {
+    match.blockProfile(req, res);
+})
+
+app.post('/report/:userID([a-z0-9_$\.@]+)', (req, res) => {
+    sendMail.reportUser(req.params.userID);
+    res.redirect('/viewProfile/' + req.params.userID);
+})
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

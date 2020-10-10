@@ -38,7 +38,7 @@ function sendVerifyEmail(email, verifykey) {
 
 function sendPassForgetEmail(email, url) {
 	let mailOptions = {
-		from: "'Matcha' <jwolfmatcha@gmail.com>",
+		from: "'Matcha' <kyletwomey99@gmail.com>",
 		to: email + ", <" + email + ">",
 		subject: "Matcha Forgot Password",
 		text: "Matcha Forgot password",
@@ -66,7 +66,25 @@ function sendPassForget(email) {
 	});
 }
 
+function reportUser(userID) {
+	let mailOptions = {
+		from: "'Matcha' <matchawtc@gmail.com>",
+		to: "matchawtc@gmail.com" + "<matchawtc@gmail.com>",
+		subject: "User Reported",
+		text: "User Reported",
+		html:
+			"<p>A user has been reported userID ="+ userID +"</p>"
+	};
+	transporter
+		.sendMail(mailOptions)
+		.then(info => {})
+		.catch(error => {
+			console.log("Error sending mail: " + error);
+		});
+}
+
 module.exports = {
 	sendVerifyEmail: sendVerifyEmail,
-	sendPassForget: sendPassForget
+	sendPassForget: sendPassForget,
+	reportUser: reportUser
 };
